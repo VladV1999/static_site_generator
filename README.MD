@@ -1,0 +1,1 @@
+This will generate a static website, which will later be used as my portfolio :D
