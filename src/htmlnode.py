@@ -13,7 +13,7 @@ class HTMLNode():
             return ""
         result = ""
         for key, value in self.props.items():
-            result = result + f' {key}="{value}"'
+            result += f' {key}="{value}"'
         return result
 
     def __repr__(self):
@@ -24,3 +24,17 @@ class HTMLNode():
                 and self.value == other.value
                 and self.children == other.children
                 and self.props == other.props)
+    
+class LeafNode(HTMLNode):
+    def __init__(self, tag, value, props):
+        super().__init__(tag, value, None, props)
+
+    def to_html(self):
+        if not self.value:
+            raise ValueError("All leaf nodes MUST have a value")
+        if not self.tag:
+            return self.value
+        return f"<{self.tag}{self.props_to_html()}>{self.value}</{self.tag}>"
+        
+    def __repr__(self):
+        return f"LeafNode({self.tag}, {self.value}, {self.props})"
