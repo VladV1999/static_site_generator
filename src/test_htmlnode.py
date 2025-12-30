@@ -59,8 +59,31 @@ class TestParentNode(unittest.TestCase):
             parent.to_html(),
             '<div> class="box" id="main"<span>hi</span></div>',
         )
-def test_text(self):
-    node = TextNode("This is a text node", TextType.TEXT)
-    html_node = text_node_to_html_node(node)
-    self.assertEqual(html_node.tag, None)
-    self.assertEqual(html_node.value, "This is a text node")
+    def test_text(self):
+        node = TextNode("This is a text node", TextType.TEXT)
+        html_node = text_node_to_html_node(node)
+        self.assertEqual(html_node.tag, None)
+        self.assertEqual(html_node.value, "This is a text node")
+
+    def test_text_diff(self):
+        node = TextNode("This is a text node", TextType.TEXT)
+        html_node = text_node_to_html_node(node)
+        self.assertNotEqual(html_node.tag, "test")
+        self.assertNotEqual(html_node.value, "This is a meant to be wrong node")
+
+    def test_link(self):
+        node = TextNode("This is a text node w a link",
+                        TextType.LINK, "www.boot.dev")
+        html_node = text_node_to_html_node(node)
+        self.assertEqual(html_node.tag, "a")
+        self.assertEqual(html_node.value, "This is a text node w a link")
+        self.assertEqual(html_node.props, {'href': 'www.boot.dev'})
+
+    def test_img(self):
+        node = TextNode("This is a text node w an image",
+                        TextType.IMAGE, "www.boot.dev/image.png")
+        html_node = text_node_to_html_node(node)
+        self.assertEqual(html_node.tag, "img")
+        self.assertEqual(html_node.value, "")
+        self.assertEqual(html_node.props["src"], "www.boot.dev/image.png")
+        self.assertEqual(html_node.props["alt"], "This is a text node w an image")
