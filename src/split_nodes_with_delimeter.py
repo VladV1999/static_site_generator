@@ -72,3 +72,13 @@ def text_to_textnodes(text):
     images_links_code_and_bold = split_nodes_delimeter(images_links_and_code, "**", TextType.BOLD)
     combined_types_of_text_type = split_nodes_delimeter(images_links_code_and_bold, "_", TextType.ITALIC)
     return combined_types_of_text_type
+
+def markdown_to_blocks(markdown):
+    blocks = markdown.split("\n\n")
+    result = []
+    for i in range(len(blocks)):
+        if len(blocks[i]) == 0:
+            continue
+        block = blocks[i].strip()
+        result.append(block)
+    return result

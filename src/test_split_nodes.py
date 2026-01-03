@@ -1,6 +1,6 @@
 import unittest
 
-from split_nodes_with_delimeter import split_nodes_delimeter, split_nodes_image, split_nodes_links, text_to_textnodes
+from split_nodes_with_delimeter import split_nodes_delimeter, split_nodes_image, split_nodes_links, text_to_textnodes, markdown_to_blocks
 from textnode import TextNode, TextType
 
 class TestSplitNode(unittest.TestCase):
@@ -157,3 +157,23 @@ class TestSplitNode(unittest.TestCase):
                 TextNode("link", TextType.LINK, "https://boot.dev")
             ]
         , nodes)
+
+    def test_markdown_to_blocks(self):
+        md = """
+This is **bolded** paragraph
+
+This is another paragraph with _italic_ text and `code` here
+This is the same paragraph on a new line
+
+- This is a list
+- with items
+"""
+        blocks = markdown_to_blocks(md)
+        self.assertEqual(
+            blocks,
+            [
+                "This is **bolded** paragraph",
+                "This is another paragraph with _italic_ text and `code` here\nThis is the same paragraph on a new line",
+                "- This is a list\n- with items",
+            ],
+        )
