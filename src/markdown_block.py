@@ -164,7 +164,7 @@ def olist_to_stripped_markdown_string(markdown_text):
     for entry in split_entries:
         dot_space_index = entry.find(". ")
         if dot_space_index != -1:
-            stripped_entries.append(entry[dot_space_index + 2])
+            stripped_entries.append(entry[dot_space_index + 2:])
     return stripped_entries
 
 def text_to_children(text):
