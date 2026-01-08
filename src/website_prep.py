@@ -27,7 +27,7 @@ def extract_title(markdown):
         raise Exception("Cannot extract title, as it is not there")
     return markdown.lstrip("# ").rstrip()
 
-def generate_page(from_path, template_path, dest_path):
+def generate_page(from_path, template_path, dest_path, basepath):
     print(f"Generating page from {from_path} to {dest_path} using {template_path}")
     with open(from_path, 'r') as f:
         md_file_from_path_text = f.read()
@@ -38,17 +38,17 @@ def generate_page(from_path, template_path, dest_path):
     md_text = markdown_to_html_node(md_file_from_path_text)
     html_text = md_text.to_html()
     title = extract_title(md_file_from_path_text)
-    print(md_text)
     full_html = md_file_template_path_text.replace("{{ Content }}", html_text)
     full_html = full_html.replace("{{ Title }}", title)
-
+    full_html = full_html.replace('href="/', f'href="{basepath}')
+    full_html = full_html.replace('src="/',  f'src="{basepath}')
     dir_of_dest_path = os.path.dirname(dest_path)
     if dir_of_dest_path != "" and not os.path.exists(dir_of_dest_path):
         os.makedirs(dir_of_dest_path)
     with open(dest_path, "w") as f:
         f.write(full_html)
 
-def generate_pages_recursive(dir_path_content, template_path, dest_dir_path):
+def generate_pages_recursive(dir_path_content, template_path, dest_dir_path, basepath):
     dir_abs_path = os.path.abspath(dir_path_content)
     dest_dir_path_content = os.path.abspath(dest_dir_path)
     list_of_paths = os.listdir(dir_abs_path)
@@ -59,8 +59,8 @@ def generate_pages_recursive(dir_path_content, template_path, dest_dir_path):
             if parts[-1] == "md":
                 dest_dir_file_path = os.path.abspath(os.path.join(dest_dir_path_content, path))
                 dest_html_path = pathlib.Path(dest_dir_file_path).with_suffix(".html")
-                generate_page(abs_path, template_path, dest_html_path)
+                generate_page(abs_path, template_path, dest_html_path, basepath)
         else:
             new_dir_path_content = os.path.abspath(os.path.join(dir_path_content, path))
             new_dest_dir_path = os.path.abspath(os.path.join(dest_dir_path, path))
-            generate_pages_recursive(new_dir_path_content, template_path, new_dest_dir_path)
+            generate_pages_recursive(new_dir_path_content, template_path, new_dest_dir_path, basepath)
